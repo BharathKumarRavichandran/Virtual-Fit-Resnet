@@ -28,8 +28,8 @@ print(torch.cuda.is_available())
 Tensor = torch.cuda.FloatTensor if cuda else torch.FloatTensor
 
 class SIH(Dataset):
-    def __init__(self, root_file, transform=None):
-		idx = 0
+	def __init__(self, root_file, transform=None):
+		idx=0
 		file_img = open(root_file, 'r')
 		self.img_anno = {}
 		for line in file_img:
@@ -47,22 +47,22 @@ class SIH(Dataset):
 		#print(self.sih_target[5])
 		self.transform = transform
 
-    def __getitem__(self, index):
-        tar_num = self.img_anno[index]
-        tar_num = int(tar_num[17:19])-1
-        measure = self.sih_target[tar_num]
-        #print(tar_num,self.sih_target[tar_num])
-        _img_temp = cv2.imread(self.img_anno[index] + '.jpeg')
-        #print(self.img_anno[index] + '.jpeg')
-        _img_temp = cv2.resize(_img_temp,(600,600))
+	def __getitem__(self, index):
+		tar_num = self.img_anno[index]
+		tar_num = int(tar_num[17:19])-1
+		measure = self.sih_target[tar_num]
+		#print(tar_num,self.sih_target[tar_num])
+		_img_temp = cv2.imread(self.img_anno[index] + '.jpeg')
+		#print(self.img_anno[index] + '.jpeg')
+		_img_temp = cv2.resize(_img_temp,(600,600))
 
-        _img = torch.from_numpy(np.array(_img_temp).transpose(2, 0, 1)).float() 
-        _target = torch.from_numpy(np.array(measure))
+		_img = torch.from_numpy(np.array(_img_temp).transpose(2, 0, 1)).float() 
+		_target = torch.from_numpy(np.array(measure))
 
-        return _img,_target
+		return _img,_target
 
-    def __len__(self):
-        return len(self.img_anno)
+	def __len__(self):
+		return len(self.img_anno)
 
 THREADS = 1
 USE_CUDA = False
@@ -81,10 +81,11 @@ criterion = nn.MSELoss()
 optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9, weight_decay=5e-4)
 
 PATH="checkpoint/11_resnet.pt"
+#checkpoint=torch.load(PATH)
 model.load_state_dict(torch.load(PATH))
 # Training
 train_loss,next_batch = 0,0
-for epoch in range(num_epochs):
+for epoch in range(11,num_epochs):
 	next_batch,train_loss,valid_loss = 0,0,0
 	for batch_i, (imgs, targets) in enumerate(train_loader):
 		imgs = imgs.to(device)
