@@ -66,7 +66,7 @@ class SIH(Dataset):
 
 THREADS = 1
 USE_CUDA = False
-batch_size = 1
+batch_size = 2
 sih_dataset = SIH(root_file="sih_train.txt")
 train_loader = data.DataLoader(sih_dataset, batch_size,num_workers = THREADS,pin_memory= USE_CUDA)
 
@@ -77,21 +77,20 @@ model = model.to(device)
 num_epochs = 50
 learning_rate = 0.0001
 
-criterion = nn.MSELoss()
+criterion = nn.L1Loss()
 optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9, weight_decay=5e-4)
 
-PATH="checkpoint/11_resnet.pt"
+PATH="checkpoint/27_resnet.pt"
 #checkpoint=torch.load(PATH)
 model.load_state_dict(torch.load(PATH))
 # Training
 train_loss,next_batch = 0,0
-for epoch in range(11,num_epochs):
+for epoch in range(27,num_epochs):
 	next_batch,train_loss,valid_loss = 0,0,0
 	for batch_i, (imgs, targets) in enumerate(train_loader):
 		imgs = imgs.to(device)
 		targets = targets.to(device)
 		#print(targets,targets.size())
-
 		outputs = model(imgs)
 		#print(outputs.size(),targets.size())
 		loss = criterion(outputs,targets)
